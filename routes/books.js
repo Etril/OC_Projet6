@@ -13,4 +13,11 @@ router.get("/:id", booksCtrl.getBook);
 
 router.get("/", booksCtrl.getList);
 
+router.post("/", booksCtrl.postBook);
+
+
+router.put("/:id", booksCtrl.putBook);
+
+router.delete("/:id", booksCtrl.deleteBook);
+
 module.exports = router;
