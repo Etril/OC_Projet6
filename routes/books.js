@@ -13,6 +13,7 @@ router.get("/", booksCtrl.getList);
 
 router.post("/", auth, multer, booksCtrl.postBook);
 
+router.post("/:id/rating", auth, booksCtrl.rateBook);
 
 router.put("/:id", auth, multer, booksCtrl.putBook);
 
