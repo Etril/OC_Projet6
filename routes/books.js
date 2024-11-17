@@ -14,7 +14,7 @@ router.get("/", booksCtrl.getList);
 router.post("/", auth, multer, booksCtrl.postBook);
 
 
-router.put("/:id", auth, booksCtrl.putBook);
+router.put("/:id", auth, multer, booksCtrl.putBook);
 
 router.delete("/:id", auth, booksCtrl.deleteBook);
 
