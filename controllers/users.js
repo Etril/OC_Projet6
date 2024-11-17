@@ -27,7 +27,7 @@ exports.login = (req, res, next) => {
             }
             else {
                 bcrypt.compare(req.body.password, user.password)
-                .then(valid => {
+                .then(valid => {  
                     if (!valid ) {
                         res.status(401).json({message: "Informations eronnées"})
                     }
