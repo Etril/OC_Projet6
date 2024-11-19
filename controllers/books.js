@@ -95,11 +95,23 @@ exports.rateBook = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
+exports.getBestRating = (req, res, next) => {
+  Book.find({})
+    .sort({ averageRating: -1 })
+    .limit(3)
+    .then((books) => res.status(200).json(books))
+    .catch((error) => res.status(400).json({ error }));
+};
+
 function updateRating(book) {
-  let sum= 0;
-  for (let i= 0; i<book.ratings.length; i++) {
-    sum += book.ratings[i].grade
+  let sum = 0;
+  for (let i = 0; i < book.ratings.length; i++) {
+    sum += book.ratings[i].grade;
   }
-  const update = sum/book.ratings.length;
-  return Book.findOneAndUpdate({ _id: book.id }, { averageRating: update }, {returnDocument: "after"});
+  const update = sum / book.ratings.length;
+  return Book.findOneAndUpdate(
+    { _id: book.id },
+    { averageRating: update },
+    { returnDocument: "after" }
+  );
 }
