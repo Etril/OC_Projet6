@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+/*** Ce middleware récupère le token de l'utilisateur à chaque requête à autoriser, le vérifie et rajoute à la requête le userId correspondant */
+
 module.exports = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1];

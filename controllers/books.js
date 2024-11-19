@@ -1,11 +1,7 @@
 const fs = require("fs");
 const Book = require("../models/Book");
 
-exports.getBook = (req, res, next) => {
-  Book.findOne({ _id: req.params.id })
-    .then((book) => res.status(200).json(book))
-    .catch((error) => res.status(400).json({ error }));
-};
+/*** Cette route permet de récupérer une array de l'ensemble des livres avec leurs informations */
 
 exports.getList = (req, res, next) => {
   Book.find({})
@@ -13,7 +9,16 @@ exports.getList = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-exports.getListBestRated = (req, res, next) => {};
+/*** Cette route permet de récupérer les informations du livre choisi sur la page d'accueil */
+
+exports.getBook = (req, res, next) => {
+  Book.findOne({ _id: req.params.id })
+    .then((book) => res.status(200).json(book))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+
+/*** Cette route permet de publier un nouveau livre */
 
 exports.postBook = (req, res, next) => {
   const bookObject = JSON.parse(req.body.book);
@@ -31,6 +36,8 @@ exports.postBook = (req, res, next) => {
     .then(() => res.status(201).json({ message: "Livre ajouté" }))
     .catch((error) => res.status(400).json(error));
 };
+
+/*** Cette route permet de modifier un livre existant, en modifiant ou non l'image */
 
 exports.putBook = (req, res, next) => {
   const bookObject = req.file
@@ -73,6 +80,8 @@ exports.putBook = (req, res, next) => {
     });
 };
 
+/*** Cette route permet de supprimer un livre existant */
+
 exports.deleteBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -89,6 +98,9 @@ exports.deleteBook = (req, res, next) => {
     })
     .catch((error) => res.status(400).json({ error }));
 };
+
+
+/*** Cette route permet de noter un livre et de mettre à jour la note moyenne */
 
 exports.rateBook = (req, res, next) => {
   Book.findOneAndUpdate(
@@ -107,6 +119,9 @@ exports.rateBook = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
+
+/*** Cette route permet de filtrer les 3 livres les mieux notés */
+
 exports.getBestRating = (req, res, next) => {
   Book.find({})
     .sort({ averageRating: -1 })
@@ -114,6 +129,9 @@ exports.getBestRating = (req, res, next) => {
     .then((books) => res.status(200).json(books))
     .catch((error) => res.status(400).json({ error }));
 };
+
+
+/*** Cette fonction est utilisée pour mettre à jour la note moyenne  */
 
 function updateRating(book) {
   let sum = 0;

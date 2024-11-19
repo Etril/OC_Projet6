@@ -2,6 +2,8 @@ const User = require ("../models/User");
 const bcrypt = require('bcrypt');
 const jwt=require ('jsonwebtoken');
 
+
+/*** Cette route est utilisée pour inscrire un nouvel utilisateur en DB */
 exports.signup= (req, res, next) => {
 
 bcrypt.hash(req.body.password, 10)
@@ -17,6 +19,9 @@ bcrypt.hash(req.body.password, 10)
 .catch(error => res.status(500).json({error}));
 
 };
+
+
+/*** Cette route est utilisée pour connecter un utilisateur existant */
 
 exports.login = (req, res, next) => {
     User.findOne({
