@@ -17,7 +17,6 @@ exports.getBook = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-
 /*** Cette route permet de publier un nouveau livre */
 
 exports.postBook = (req, res, next) => {
@@ -65,15 +64,15 @@ exports.putBook = (req, res, next) => {
               .then(() => res.status(200).json({ message: "Livre modifié!" }))
               .catch((error) => res.status(401).json({ error }));
           });
+        } else {
+          Book.updateOne(
+            { _id: req.params.id },
+            { ...bookObject, _id: req.params.id }
+          )
+            .then(() => res.status(200).json({ message: "Livre modifié!" }))
+            .catch((error) => res.status(401).json({ error }));
         }
-        else {
-        Book.updateOne(
-          { _id: req.params.id },
-          { ...bookObject, _id: req.params.id }
-        )
-          .then(() => res.status(200).json({ message: "Livre modifié!" }))
-          .catch((error) => res.status(401).json({ error }));
-      }}
+      }
     })
     .catch((error) => {
       res.status(400).json({ error });
@@ -86,7 +85,7 @@ exports.deleteBook = (req, res, next) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
       if (book.userId != req.auth.userId) {
-        res.status(401).json({ message: "Unauthorized request" });
+        res.status(403).json({ message: "Unauthorized request" });
       } else {
         const filename = book.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
@@ -99,26 +98,33 @@ exports.deleteBook = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-
 /*** Cette route permet de noter un livre et de mettre à jour la note moyenne */
 
 exports.rateBook = (req, res, next) => {
-  Book.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      $addToSet: {
-        ratings: { userId: req.auth.userId, grade: req.body.rating },
-      },
-    }
-  )
-    .then((book) => {
-      updateRating(book)
-        .then((book) => res.status(201).json(book))
-        .catch((error) => res.status(400).json({ error }));
+  Book.find({ _id: req.params.id, 'ratings.userId': req.auth.userId })
+    .then((result) => {
+      console.log(result)
+      if (result.length != 0) {
+        res.status(403).json({ message: "Unauthorized request" });
+        return;
+      }
+      Book.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $addToSet: {
+            ratings: { userId: req.auth.userId, grade: req.body.rating },
+          },
+        }
+      )
+        .then((book) => {
+          updateRating(book)
+            .then((book) => res.status(201).json(book))
+            .catch((error) => res.status(400).json({ error }));
+        })
+        .catch((error) => res.status(400).json({error}))
     })
     .catch((error) => res.status(400).json({ error }));
 };
-
 
 /*** Cette route permet de filtrer les 3 livres les mieux notés */
 
@@ -130,8 +136,7 @@ exports.getBestRating = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-
-/*** Cette fonction est utilisée pour mettre à jour la note moyenne  */
+/*** Cette fonction est utilisée pour mettre à jour la note moyenne */
 
 function updateRating(book) {
   let sum = 0;
@@ -144,4 +149,8 @@ function updateRating(book) {
     { averageRating: update },
     { returnDocument: "after" }
   );
+}
+
+function checkDoublon(bookChoice) {
+  return bookChoice.find((a) => a.ratings.userId === req.auth.userId);
 }
