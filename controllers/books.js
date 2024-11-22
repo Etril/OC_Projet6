@@ -114,7 +114,9 @@ exports.rateBook = (req, res, next) => {
           $addToSet: {
             ratings: { userId: req.auth.userId, grade: req.body.rating },
           },
-        }
+          
+        },
+        { returnDocument: "after" }
       )
         .then((book) => {
           updateRating(book)
@@ -143,14 +145,12 @@ function updateRating(book) {
   for (let i = 0; i < book.ratings.length; i++) {
     sum += book.ratings[i].grade;
   }
-  const update = sum / book.ratings.length;
+  console.log(sum);
+  const update = (sum / book.ratings.length);
+  console.log(update);
   return Book.findOneAndUpdate(
     { _id: book.id },
     { averageRating: update },
     { returnDocument: "after" }
   );
-}
-
-function checkDoublon(bookChoice) {
-  return bookChoice.find((a) => a.ratings.userId === req.auth.userId);
 }

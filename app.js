@@ -4,9 +4,13 @@ const bookRoutes= require("./routes/books.js");
 const userRoutes= require("./routes/users.js")
 const cors= require('cors');
 const path = require ("path");
+const helmet= require("helmet");
+
 
 const app=express();
 app.use(cors());
+app.use(helmet(
+  {crossOriginResourcePolicy: false}));
 
 
 
