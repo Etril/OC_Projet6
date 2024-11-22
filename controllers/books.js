@@ -103,7 +103,6 @@ exports.deleteBook = (req, res, next) => {
 exports.rateBook = (req, res, next) => {
   Book.find({ _id: req.params.id, 'ratings.userId': req.auth.userId })
     .then((result) => {
-      console.log(result)
       if (result.length != 0) {
         res.status(403).json({ message: "Unauthorized request" });
         return;
@@ -145,9 +144,7 @@ function updateRating(book) {
   for (let i = 0; i < book.ratings.length; i++) {
     sum += book.ratings[i].grade;
   }
-  console.log(sum);
   const update = (sum / book.ratings.length);
-  console.log(update);
   return Book.findOneAndUpdate(
     { _id: book.id },
     { averageRating: update },

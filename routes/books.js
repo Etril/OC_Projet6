@@ -5,8 +5,6 @@ const multer= require("../middlewares/multer-sharp");
 const router= express.Router();
 
 
-
-
 router.get("/bestrating", booksCtrl.getBestRating);
 
 router.get("/:id", booksCtrl.getBook);
