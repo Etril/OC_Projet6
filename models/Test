@@ -1,0 +1,20 @@
+const mongoose = require("mongoose");
+
+const MenuSchema = mongoose.Schema({
+  userId: { type: String, required: true },
+  font: { type: String, required: true },
+  color: { type: String, required: true },
+  catégories: [
+    {
+      nom: { type: String, required: true },
+      plats: [
+        {
+          titre: { type: String, required: true },
+          imageURL: { type: String, required: true },
+          prix: { type: Number, required: true },
+          description: { type: String, required: true },
+        },
+      ],
+    },
+  ],
+});
