@@ -1,4 +1,4 @@
-# OC_Projet6
+# Vieux-Grimoire
 Développement du Back-end d'un site de notation de livre (Nodejs-Express-MongoDB)
 
 Pour faire fonctionner l'application: 
